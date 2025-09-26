@@ -136,12 +136,22 @@ def preprocess_spam_data(csv_file, preprocessing_level='medium'):
     # Convert labels
     data['label_numeric'] = data[label_col].map({'ham': 0, 'spam': 1})
     
-    # === Extra columns for output ===
-    hotwords = {"free", "win", "offer", "money", "click"}
+    hotwords = {
+    "free", "cash", "loan", "prize", "viagra", 
+    "credit", "credit card", "winner", "guaranteed", 
+    "sale", "luck", "offer", "money", "click", 
+    "limited", "urgent", "win", "cheap", "deal", 
+    "bonus", "gift"
+    }
     
     def has_emoji(text):
         return any(not c.isascii() for c in str(text))
-    
+
+    def detect_hotwords(text):
+        text = str(text).lower()
+        matched = [hw for hw in hotwords if re.search(rf"\b{re.escape(hw)}\b", text)]
+        return ", ".join(matched) if matched else "None"
+
     def has_hotword(text):
         words = set(text.lower().split())
         return int(any(hw in words for hw in hotwords))
@@ -243,15 +253,13 @@ def extract_email(text):
 
 # Simple usage example
 if __name__ == "__main__":
-    # Preprocess dataset
-    data, text_col, label_col = preprocess_spam_data('spam_email.csv', 'medium')
+    data = preprocess_spam_data('spam_email.csv', 'medium')
 
-    # Save selected columns to CSV
     output_file = "preprocessed_spam.csv"
-    data[['Label', 'Sender Email', 'Subject', 'Content', 'Use emoji', 'Use exclamation mark?', 'Hotword']].to_csv(output_file, index=False)
+    data[['Label', 'Sender Email', 'Subject', 'Content',
+          'Use emoji', 'Use exclamation mark?', 'Hotword',
+          'Text Length', 'Word Count', 'Uppercase Ratio',
+          'Digit Count', 'URL Count', 'Special Char Count']].to_csv(output_file, index=False)
 
     print(f"\nProcessed data saved to {output_file}")
-
-    # Show sample rows
-    print("\nSample preprocessed rows:")
-    print(data[['Label', 'Sender Email', 'Subject', 'Content', 'Use emoji', 'Use exclamation mark?', 'Hotword']].head(5))
+    print(data.head(5))
