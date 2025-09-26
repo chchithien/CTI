@@ -21,7 +21,6 @@ class TextPreprocessor:
         self.stop_words = set(stopwords.words('english'))
     
     def basic_cleaning(self, text):
-        """Basic text cleaning"""
         if pd.isna(text):
             return ""
         
@@ -34,13 +33,11 @@ class TextPreprocessor:
         return text
     
     def remove_special_chars(self, text):
-        """Remove special characters and numbers"""
         # Keep only alphabets and spaces
         text = re.sub(r'[^a-zA-Z\s]', '', text)
         return text
     
     def remove_urls_emails(self, text):
-        """Remove URLs and email addresses"""
         # Remove URLs
         text = re.sub(r'http\S+|www\S+|https\S+', '', text, flags=re.MULTILINE)
     
@@ -50,36 +47,30 @@ class TextPreprocessor:
         return text
     
     def remove_html_tags(self, text):
-        """Remove HTML tags"""
         text = re.sub(r'<.*?>', '', text)
         return text
     
     def remove_stopwords(self, text):
-        """Remove stop words"""
         words = text.split()
         words = [word for word in words if word not in self.stop_words]
         return ' '.join(words)
     
     def apply_stemming(self, text):
-        """Apply stemming to reduce words to root form"""
         words = text.split()
         stemmed = [self.stemmer.stem(word) for word in words]
         return ' '.join(stemmed)
     
     def apply_lemmatization(self, text):
-        """Apply lemmatization (better than stemming)"""
         words = word_tokenize(text)
         lemmatized = [self.lemmatizer.lemmatize(word) for word in words]
         return ' '.join(lemmatized)
     
     def preprocess_light(self, text):
-        """Light preprocessing - fast and simple"""
         text = self.basic_cleaning(text)
         text = self.remove_special_chars(text)
         return text
     
     def preprocess_medium(self, text):
-        """Medium preprocessing - balanced approach"""
         text = self.basic_cleaning(text)
         text = self.remove_urls_emails(text)
         text = self.remove_html_tags(text)
@@ -88,7 +79,6 @@ class TextPreprocessor:
         return text
     
     def preprocess_heavy(self, text):
-        """Heavy preprocessing - thorough cleaning"""
         text = self.basic_cleaning(text)
         text = self.remove_urls_emails(text)
         text = self.remove_html_tags(text)
@@ -97,7 +87,6 @@ class TextPreprocessor:
         text = self.apply_stemming(text)  # or use apply_lemmatization(text)
         return text
 
-# Example usage with your dataset
 def preprocess_spam_data(csv_file, preprocessing_level='medium'):
     """
     Preprocess spam dataset
@@ -151,34 +140,35 @@ def preprocess_spam_data(csv_file, preprocessing_level='medium'):
         text = str(text).lower()
         matched = [hw for hw in hotwords if re.search(rf"\b{re.escape(hw)}\b", text)]
         return ", ".join(matched) if matched else "None"
-
-    def has_hotword(text):
-        words = set(text.lower().split())
-        return int(any(hw in words for hw in hotwords))
     
     def extract_email(text):
         match = re.search(r'[\w\.-]+@[\w\.-]+\.\w+', str(text))
         return match.group(0) if match else "N/A"
-    
+
+    # Extract features
     data['Label'] = data[label_col]
     data['Subject'] = data[text_col].apply(lambda x: " ".join(str(x).split()[:3]) if isinstance(x, str) else "N/A")  # first 3 words
     data['Content'] = data['cleaned_text']
     data['Sender Email'] = data[text_col].apply(extract_email)
     data['Use emoji'] = data[text_col].apply(lambda x: int(has_emoji(x)))
     data['Use exclamation mark?'] = data[text_col].apply(lambda x: int("!" in str(x)))
-    data['Hotword'] = data['cleaned_text'].apply(has_hotword)
+    data['Hotword'] = data['cleaned_text'].apply(detect_hotwords)
+    data['Text Length'] = data['cleaned_text'].str.len()
+    data['Word Count'] = data['cleaned_text'].apply(lambda x: len(str(x).split()))
+    data['Uppercase Ratio'] = data[text_col].apply(lambda x: round(sum(1 for c in str(x) if c.isupper()) / max(len(str(x)),1), 5))
+    data['Digit Count'] = data['cleaned_text'].apply(lambda x: sum(c.isdigit() for c in str(x)))
+    data['URL Count'] = data[text_col].apply(lambda x: len(re.findall(r'http[s]?://\S+', str(x))))
+    data['Special Char Count'] = data['cleaned_text'].apply(lambda x: len(re.findall(r'[$%&*@#?]', str(x))))
     
     print(f"Original dataset: {len(data)} samples")
     print(f"After cleaning: {len(data)} samples")
     print(f"Label distribution:\n{data['label_numeric'].value_counts()}")
     
-    return data, text_col, label_col
+    return data
 
 # Advanced preprocessing options
 def advanced_preprocessing():
-    """Additional preprocessing techniques"""
-    
-    # 1. Handle class imbalance
+    # Handle class imbalance
     from sklearn.utils import resample
     
     def balance_dataset(data):
@@ -202,7 +192,7 @@ def advanced_preprocessing():
         
         return balanced_data
     
-    # 2. Feature extraction options
+    # Feature extraction options
     def get_vectorizer_options():
         vectorizers = {
             'tfidf': TfidfVectorizer(max_features=5000, stop_words='english', ngram_range=(1,2)),
@@ -211,7 +201,7 @@ def advanced_preprocessing():
         }
         return vectorizers
     
-    # 3. Text statistics features
+    # Text statistics features
     def extract_text_features(text):
         features = {
             'length': len(text),
@@ -225,8 +215,6 @@ def advanced_preprocessing():
 
 # Complete preprocessing pipeline
 def complete_preprocessing_pipeline(csv_file):
-    """Complete preprocessing pipeline"""
-    
     # Load and preprocess
     data = preprocess_spam_data(csv_file, 'medium')
     
@@ -251,7 +239,6 @@ def extract_email(text):
     match = re.search(r'[\w\.-]+@[\w\.-]+\.\w+', str(text))
     return match.group(0) if match else "N/A"
 
-# Simple usage example
 if __name__ == "__main__":
     data = preprocess_spam_data('spam_email.csv', 'medium')
 
