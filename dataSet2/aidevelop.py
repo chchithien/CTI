@@ -18,7 +18,7 @@ X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42, stratify=y
 )
 
-# ⚠️ Random Forest does not require feature scaling (tree models are scale-invariant)
+# Random Forest does not require feature scaling (tree models are scale-invariant)
 X_train_scaled, X_test_scaled = X_train, X_test
 
 # 4. Random Forest + GridSearchCV
@@ -40,8 +40,8 @@ grid_search = GridSearchCV(
 
 grid_search.fit(X_train_scaled, y_train)
 
-print("✅ Best Parameters:", grid_search.best_params_)
-print("✅ Best CV F1 Score:", grid_search.best_score_)
+print("Best Parameters:", grid_search.best_params_)
+print("Best CV F1 Score:", grid_search.best_score_)
 
 # 5. Predict with the best model
 best_model = grid_search.best_estimator_
@@ -53,7 +53,7 @@ precision = precision_score(y_test, y_pred)
 recall = recall_score(y_test, y_pred)
 f1 = f1_score(y_test, y_pred)
 
-print("\n📊 Random Forest (Best Model) Results:")
+print("\nRandom Forest (Best Model) Results:")
 print(f"Accuracy : {accuracy:.4f}")
 print(f"Precision: {precision:.4f}")
 print(f"Recall   : {recall:.4f}")

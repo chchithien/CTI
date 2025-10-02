@@ -8,7 +8,7 @@ from scipy.sparse import hstack
 # load
 df = pd.read_csv("Desktop\\CTI\\dataSet2\\emails_clean.csv")
 
-# null 处理
+# null 
 df["Subject"] = df["Subject"].fillna("")
 df["Message"] = df["Message"].fillna("")
 
@@ -31,7 +31,7 @@ spam_groups = {
 
 
 def extract_features_with_tfidf(df, max_features=3000):
-    # -------- 1. 结构化 & 关键词特征 --------
+
     features = pd.DataFrame()
 
     
@@ -130,9 +130,9 @@ def plot_top_correlated_features(data, label_col="Spam/Ham", top_n=15):
 
 # ==== extract features ====
 X, y, tfidf, struct_feature_names, struct_df = extract_features_with_tfidf(df)
-print("特征矩阵大小:", X.shape)
-print("标签大小:", y.shape)
-print("结构特征列:", list(struct_feature_names))
+print("feature matrix size:", X.shape)
+print("Label size:", y.shape)
+print("Structural feature columns:", list(struct_feature_names))
 
 # ==== visualize ====
 plot_top_correlated_features(struct_df, "Spam/Ham", top_n=50)
