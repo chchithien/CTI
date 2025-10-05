@@ -1,0 +1,1 @@
+Place the school-provided raw CSV here as 'emails.csv'.
