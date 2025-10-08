@@ -5,9 +5,11 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 import seaborn as sns
 import matplotlib.pyplot as plt
+from sklearn.metrics import roc_curve, precision_recall_curve, auc
+from sklearn.metrics import roc_auc_score
 
 # 1. Load data
-df = pd.read_csv("Desktop\\CTI\\dataSet2\\emails_features.csv")
+df = pd.read_csv("Desktop\\CTI\\emails_features.csv")
 
 # 2. Features and target
 X = df.drop(columns=["Spam/Ham"])
@@ -59,6 +61,10 @@ print(f"Precision: {precision:.4f}")
 print(f"Recall   : {recall:.4f}")
 print(f"F1-score : {f1:.4f}")
 
+y_pred_proba = best_model.predict_proba(X_test_scaled)
+roc_auc = roc_auc_score(y_test, y_pred_proba[:, 1])
+print("ROC AUC:", roc_auc)
+
 # 7. Confusion matrix visualization
 cm = confusion_matrix(y_test, y_pred)
 plt.figure(figsize=(6,5))
@@ -66,4 +72,32 @@ sns.heatmap(cm, annot=True, fmt="d", cmap="Greens", xticklabels=["Ham", "Spam"],
 plt.xlabel("Predicted")
 plt.ylabel("Actual")
 plt.title("Confusion Matrix - Random Forest (Best Params)")
+plt.show()
+
+
+
+# ===== ROC =====
+fpr, tpr, thresholds = roc_curve(y_test, y_pred_proba[:, 1])  
+plt.figure(figsize=(6,5))
+plt.plot(fpr, tpr, color='darkorange', linewidth=2, label=f"ROC curve (AUC = {roc_auc:.4f})")
+plt.plot([0, 1], [0, 1], color='navy', linestyle='--', label="Random Guess")
+plt.title("ROC Curve - Random Forest")
+plt.xlabel("False Positive Rate (1 - Specificity)")
+plt.ylabel("True Positive Rate (Recall)")
+plt.legend(loc="lower right")
+plt.grid(True)
+plt.show()
+
+# ===== Precision-Recall  =====
+precision, recall, _ = precision_recall_curve(y_test, y_pred_proba[:, 1])
+pr_auc = auc(recall, precision)
+print(f"Precision-Recall AUC: {pr_auc:.4f}")
+
+plt.figure(figsize=(6,5))
+plt.plot(recall, precision, color='purple', linewidth=2, label=f"PR curve (AUC = {pr_auc:.4f})")
+plt.title("Precision-Recall Curve - Random Forest")
+plt.xlabel("Recall")
+plt.ylabel("Precision")
+plt.legend(loc="lower left")
+plt.grid(True)
 plt.show()
