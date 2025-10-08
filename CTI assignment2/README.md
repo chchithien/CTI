@@ -1,16 +1,15 @@
-# 📧 Email Spam Detection Using Machine Learning
+#  Email Spam Detection Using Machine Learning
 
-## 🧩 Overview
+##  Overview
 This project develops a **machine learning-based email spam classifier**
-using data cleaning, feature extraction, and Random Forest
-classification.  
+using data cleaning, feature extraction, and Machine learning implementation.  
 It integrates multiple datasets (`emails.csv`, `enron_spam_data.csv`,
 etc.), performs comprehensive preprocessing, and builds a trained model
 capable of predicting whether an email is spam or ham (legitimate).
 
 ---
 
-## ⚙️ 1. Environment Configuration
+##  1. Environment Configuration
 
 ### Step 1. Create Conda Environment
 ```bash
@@ -20,7 +19,7 @@ conda activate spamdetect
 
 ---
 
-## 🧹 2. Data Cleaning and Preprocessing
+##  2. Data Cleaning and Preprocessing
 
 ### 🔹 Dataset1 cleaning (`data_clean_dataset1.py`)
 This script performs step-by-step preprocessing such as:  
@@ -39,7 +38,7 @@ python data_clean_dataset1.py
 ---
 
 ### 🔹 Dataset2 cleaning (`data_clean_dataset2.py`)
-For deeper text normalization:  
+For dataset2 cleaning:  
 - Removes headers, tables, dates, times, emails, and symbols  
 - Filters outliers and extremely short messages  
 - Converts "Spam/Ham" to binary (1 for spam, 0 for ham)  
@@ -55,7 +54,6 @@ python data_clean_dataset2.py
 ---
 
 ### 🔹 Dataset3 cleaning (`data_cleaning_dataset3.py`)
-This script provides an **object-oriented and automated cleaning pipeline** for spam datasets.
 
 **Main features:**  
 - Uses a `SpamDataProcessor` class for modular data handling  
@@ -87,7 +85,7 @@ It ensures consistency by combining cleaned samples from multiple sources (e.g.,
 
 ---
 
-## 🧠 3. Feature Extraction
+##  3. Feature Extraction
 
 Use `feature_extraction.py` to convert cleaned text into structured numerical features.
 
@@ -107,7 +105,8 @@ python feature_extraction.py
 
 ---
 
-## 🤖 4. Model Training (Random Forest & `ml_model_cti`)
+##  4. Model Training (Random Forest) 
+It was listed separately because other team members combined their methods into a single file.
 
 Use `randomforest.py` to train and evaluate the spam classifier.
 
@@ -129,7 +128,7 @@ python randomforest.py
 
 ---
 
-### 🧪 5.1 Integrated Notebook (`ml_model_cti.ipynb`)
+###  5.1 Integrated Notebook (`ml_model_cti.ipynb`)
 
 The Jupyter Notebook **`ml_model_cti.ipynb`** provides an interactive environment to:  
 - Combine data cleaning, feature extraction, and model training in one workflow  
@@ -146,24 +145,24 @@ This notebook is particularly useful for debugging, tuning, and presenting the p
 
 ---
 
-### 🧠 5.2 Models Used in `ml_model_cti.ipynb`
+###  5.2 Models Used in `ml_model_cti.ipynb`
 
 The notebook evaluates and compares several **machine learning algorithms** for spam detection.  
 Each model is trained using the same preprocessed and feature-extracted dataset (`combined_dataset.csv` → `emails_features.csv`), and their results are compared.
 
 **Models Implemented:**
-1. **Random Forest Classifier** 🌳 — Main model, tuned with `GridSearchCV`  
-2. **Logistic Regression** 📈 — Baseline linear model  
-3. **Naïve Bayes (MultinomialNB / BernoulliNB)** 📧 — Fast, efficient, classic spam detector  
-4. **Support Vector Machine (SVM)** ⚙️ — Robust classifier for high-dimensional data  
-5. **Decision Tree / KNN** 🌐 — Tested for comparison  
+1. **Random Forest Classifier**  — Main model, tuned with `GridSearchCV`  
+2. **Logistic Regression**  — Baseline linear model  
+3. **Naïve Bayes (MultinomialNB / BernoulliNB)**  — Fast, efficient, classic spam detector  
+4. **Support Vector Machine (SVM)**  — Robust classifier for high-dimensional data  
+5. **Decision Tree / KNN**  — Tested for comparison  
 
 **Comparison Metrics:**  
 Accuracy, Precision, Recall, F1-score, ROC-AUC, Execution time  
 
 ---
 
-## 📊 6. Files Summary
+##  6. Files Summary
 
 | File | Description |
 |------|--------------|
@@ -179,7 +178,7 @@ Accuracy, Precision, Recall, F1-score, ROC-AUC, Execution time
 
 ---
 
-## 🧾 7. Expected Output Example
+##  7. Expected Output Example
 ```text
 Best Parameters: {'n_estimators': 200, 'max_depth': 20, 'class_weight': 'balanced'}
 Best CV F1 Score: 0.974
@@ -192,7 +191,7 @@ ROC AUC: 0.991
 
 ---
 
-## 🧠 8. Notes
+##  8. Notes
 - Ensure **NLTK datasets** (`punkt`, `wordnet`, `stopwords`) are downloaded automatically.  
 - Update file paths (`Desktop\CTI\dataSet2\...`) according to your directory.  
 - Each script produces `.csv` outputs for the next processing stage.  
