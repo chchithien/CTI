@@ -22,11 +22,7 @@ spam_words = [
 ]
 
 
-spam_groups = {
-    "money_related": ["free", "money", "cash", "prize"],
-    "click_related": ["click", "offer", "buy", "limited", "access"],
 
-}
 
 
 
@@ -73,16 +69,12 @@ def extract_features_with_tfidf(df, max_features=3000):
 
 
     # Spam keyword counts
-    combined_text = df["Subject"] + " " + df["Message"]
-    for word in spam_words:
-        features[f'word_{word}'] = combined_text.apply(
-            lambda x: len(re.findall(rf'\b{word}\b', x, flags=re.IGNORECASE))
-        )
+    combined_text = (df["Subject"] + " " + df["Message"]).str.lower()
+    features['has_spam_keyword'] = combined_text.apply(
+        lambda x: int(any(word in x for word in spam_words))
+    )
 
-    for group_name, words in spam_groups.items():
-        features[f"group_{group_name}"] = combined_text.apply(
-            lambda x: sum(len(re.findall(rf'\b{w}\b', x, flags=re.IGNORECASE)) for w in words)
-        )
+
     # -------- 2. TF-IDF  --------
     tfidf = TfidfVectorizer(stop_words="english", max_features=max_features)
     X_tfidf = tfidf.fit_transform(combined_text)
