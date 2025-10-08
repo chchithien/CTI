@@ -150,7 +150,7 @@ def analyze_cleaned_data(file: str):
 
 # --- Run ---
 if __name__ == "__main__":
-    input_file = "Desktop\\CTI\\dataSet2\\enron_spam_data.csv"
+    input_file = "enron_spam_data.csv"
     output_file = "emails_clean.csv"
     clean_dataset(input_file, output_file)
     analyze_cleaned_data(output_file)

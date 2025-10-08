@@ -6,7 +6,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from scipy.sparse import hstack
 
 # load
-df = pd.read_csv("Desktop\\CTI\\combined_dataset.csv")
+df = pd.read_csv("combined_dataset.csv")
 
 # null 
 df["Subject"] = df["Subject"].fillna("")
